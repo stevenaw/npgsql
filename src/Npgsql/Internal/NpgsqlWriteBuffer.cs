@@ -451,7 +451,7 @@ sealed class NpgsqlWriteBuffer : IDisposable
         {
             if (ms.TryGetBuffer(out var segment))
             {
-                WriteBytes(new ReadOnlyMemory<byte>(segment.Array, segment.Offset + (int)ms.Position, segment.Count));
+                WriteBytes(new ReadOnlySpan<byte>(segment.Array, segment.Offset + (int)ms.Position, segment.Count));
                 return;
             }
         }
