@@ -447,6 +447,15 @@ sealed class NpgsqlWriteBuffer : IDisposable
 
     public async Task WriteStreamRaw(Stream stream, int count, bool async, CancellationToken cancellationToken = default)
     {
+        if (stream is MemoryStream ms)
+        {
+            if (ms.TryGetBuffer(out var segment))
+            {
+                WriteBytes(new ReadOnlyMemory<byte>(segment.Array, segment.Offset + (int)ms.Position, segment.Count));
+                return;
+            }
+        }
+
         while (count > 0)
         {
             if (WriteSpaceLeft == 0)
