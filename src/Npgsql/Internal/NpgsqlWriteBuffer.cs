@@ -584,7 +584,11 @@ sealed class NpgsqlWriteBuffer : IDisposable
     /// </summary>
     internal byte[] GetContents()
     {
+#if NET6_0_OR_GREATER
+        var buf = GC.AllocateUninitializedArray<byte>(WritePosition);
+#else
         var buf = new byte[WritePosition];
+#endif
         Array.Copy(Buffer, buf, WritePosition);
         return buf;
     }
